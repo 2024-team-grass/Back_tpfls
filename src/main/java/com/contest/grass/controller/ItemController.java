@@ -1,24 +1,48 @@
 package com.contest.grass.controller;
 
-import ch.qos.logback.core.model.Model;
-import com.contest.grass.repository.ItemRepository;
+import com.contest.grass.entity.Item;
+import com.contest.grass.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/items")
 public class ItemController {
 
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
+
     @Autowired
-    public ItemController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
-    @GetMapping("/item")
-    String item(Model model) {
-        itemRepository.findAll();
+    // 1. 제품명, 금액, 세일가, 이미지, 카테고리 조회 (GET)
+    @GetMapping
+    public List<Item> getAllItems() {
+        return itemService.getAllItems();
+    }
 
-        return "item.html";
+    // 2. 특정 상품의 상세페이지 조회 (GET)
+    @GetMapping("/{id}")
+    public ResponseEntity<Item> getItemDetail(@PathVariable Long id) {
+        Item item = itemService.getItemById(id);
+        return ResponseEntity.ok(item);
+    }
+
+    // 3. 특정 상품의 상품명 수정 (POST)
+    @PostMapping("/{id}/title")
+    public ResponseEntity<Item> updateItemTitle(@PathVariable Long id, @RequestParam String title) {
+        Item updatedItem = itemService.updateItemTitle(id, title);
+        return ResponseEntity.ok(updatedItem);
+    }
+
+    // 4. 특정 상품의 재고 수량 수정 (POST)
+    @PostMapping("/{id}/quantity")
+    public ResponseEntity<Item> updateItemQuantity(@PathVariable Long id, @RequestParam Integer quantity) {
+        Item updatedItem = itemService.updateItemQuantity(id, quantity);
+        return ResponseEntity.ok(updatedItem);
     }
 }
