@@ -34,6 +34,9 @@ public class User {
     @Column(nullable = false)
     private Integer sprouts;  // 보유 새싹 (포인트 또는 레벨)
 
+    @Column(columnDefinition = "TINYINT(1)")
+    private boolean isVerified;  // 이메일 인증 여부
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts;  // 사용자가 작성한 게시물들과의 관계
 
@@ -108,6 +111,14 @@ public class User {
 
     public void setSprouts(Integer sprouts) {
         this.sprouts = sprouts;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
     }
 
     public List<Post> getPosts() {
